@@ -42,7 +42,8 @@ El programa comenzará a capturar paquetes de red y verificará periódicamente 
 Registro
 
 El programa registra información relevante en el archivo app.log. Este archivo contiene registros detallados de la actividad del programa, incluyendo la captura de paquetes, errores de solicitud HTTP y envío de mensajes de texto.
-Notas adicionales
+
+Notas adicionales:
 
     El programa utiliza la biblioteca schedule para programar tareas periódicas de verificación de la sesión de cookie. Puedes modificar la frecuencia de las verificaciones ajustando el parámetro de la función schedule.every() dentro del bloque if __name__ == "__main__":.
     El programa utiliza la biblioteca scapy para la captura de paquetes de red. Puedes personalizar la función packet_callback() para realizar análisis adicional de los paquetes capturados.
