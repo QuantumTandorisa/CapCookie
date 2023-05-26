@@ -16,9 +16,6 @@ Antes de ejecutar este código, asegúrate de tener instaladas las siguientes de
 
 Puedes instalar estas dependencias ejecutando el siguiente comando:
 
-
-<kbd>Copy code</kbd>
-
 ```
 pip install requests schedule twilio scapy
 ```
@@ -36,8 +33,6 @@ Antes de ejecutar el código, es necesario realizar algunas configuraciones:
 Uso:
 
 Una vez que hayas realizado la configuración adecuada, puedes ejecutar el programa ejecutando el archivo. Asegúrate de estar en el mismo directorio donde se encuentra el archivo y ejecuta el siguiente comando:
-
-<kbd>Copy code</kbd>
 
 ```
 python CapCookie.py
