@@ -39,7 +39,8 @@ python CapCookie.py
 ```
 
 El programa comenzará a capturar paquetes de red y verificará periódicamente la sesión de cookie. Si se detecta alguna irregularidad en la sesión de cookie, se enviará una notificación por SMS al número de destino especificado.
-Registro
+
+Registro:
 
 El programa registra información relevante en el archivo app.log. Este archivo contiene registros detallados de la actividad del programa, incluyendo la captura de paquetes, errores de solicitud HTTP y envío de mensajes de texto.
 
