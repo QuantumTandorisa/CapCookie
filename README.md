@@ -46,5 +46,5 @@ El programa registra información relevante en el archivo app.log. Este archivo 
 
 Notas adicionales:
 
-    El programa utiliza la biblioteca schedule para programar tareas periódicas de verificación de la sesión de cookie. Puedes modificar la frecuencia de las verificaciones ajustando el parámetro de la función schedule.every() dentro del bloque if __name__ == "__main__":.
-    El programa utiliza la biblioteca scapy para la captura de paquetes de red. Puedes personalizar la función packet_callback() para realizar análisis adicional de los paquetes capturados.
+  El programa utiliza la biblioteca schedule para programar tareas periódicas de verificación de la sesión de cookie. Puedes modificar la frecuencia de las verificaciones ajustando el parámetro de la función schedule.every() dentro del bloque if __name__ == "__main__":.
+  El programa utiliza la biblioteca scapy para la captura de paquetes de red. Puedes personalizar la función packet_callback() para realizar análisis adicional de los paquetes capturados.
