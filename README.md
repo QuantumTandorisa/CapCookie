@@ -26,9 +26,9 @@ Configuración:
 
 Antes de ejecutar el código, es necesario realizar algunas configuraciones:
 
-    Establece la URL del sitio web que deseas monitorear en la variable url dentro del bloque if __name__ == "__main__":.
-    Define el nombre de la cookie de sesión que deseas verificar en la variable cookie_name.
-    Modifica los números de teléfono de origen y destino en las variables from_phone y to_phone dentro de la función send_sms_notification().
+Establece la URL del sitio web que deseas monitorear en la variable url dentro del bloque if __name__ == "__main__":.
+Define el nombre de la cookie de sesión que deseas verificar en la variable cookie_name.
+Modifica los números de teléfono de origen y destino en las variables from_phone y to_phone dentro de la función send_sms_notification().
 
 Uso:
 
