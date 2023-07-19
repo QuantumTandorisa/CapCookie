@@ -1,7 +1,7 @@
 README
 
 Sistema de monitoreo de sesión de cookies en Python. 
-El objetivo de este programa es verificar periódicamente si una sesión de cookie está activa y válida, y enviar una notificación por SMS si se detecta algún compromiso.
+El objetivo de este programa es verificar periódicamente si una sesión de cookie está activa y válida, y enviar una notificación por SMS si se detecta algún compromiso. 
 
 Requisitos previos:
 
