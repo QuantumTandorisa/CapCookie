@@ -1,111 +1,87 @@
+# -*- coding: utf-8 -*-
+'''
+   ______            ______            __   _    
+  / ____/___ _____  / ____/___  ____  / /__(_)__ 
+ / /   / __ `/ __ \/ /   / __ \/ __ \/ //_/ / _ \
+/ /___/ /_/ / /_/ / /___/ /_/ / /_/ / ,< / /  __/
+\____/\__,_/ .___/\____/\____/\____/_/|_/_/\___/ 
+          /_/                                    
+'''
+#######################################################
+#    CapCookie.py
+#
+# CapCookie is a tool that allows you to capture and 
+# monitor cookies on different websites and check 
+# their validity using NTLM authentication. It can 
+# be useful to make sure that authentication cookies 
+# in your web applications are still valid.
+#
+#
+# 10/18/23 - Changed to Python3 (finally)
+#
+# Author: Facundo Fernandez 
+#
+#
+#######################################################
+
+import json
 import requests
-import schedule
-import time
-from twilio.rest import Client
-import logging
-from multiprocessing import Process, Queue
-from scapy.all import sniff, IP
+from requests_ntlm import HttpNtlmAuth
 
-# Configuración de registro
-logging.basicConfig(level=logging.INFO, filename="app.log", filemode="a",
-                    format="%(asctime)s - %(levelname)s - %(message)s")
+# Estructura para almacenar cookies y URLs
+sitios = {}
 
-def packet_callback_wrapper(packet, queue):
-    packet_callback(packet)
-    # Aquí puedes realizar cualquier operación adicional que requiera el uso de 'queue'
-
-def packet_callback(packet):
-    # Aquí puedes realizar el análisis de los paquetes capturados
-    # Puedes obtener información como las direcciones IP de origen y destino
-
-    # Ejemplo: Obtener la IP de origen
-    if packet.haslayer(IP):
-        src_ip = packet[IP].src
-        logging.info("Paquete capturado desde la IP: %s", src_ip)
-
-def check_session_cookie(url, cookie_name, queue):
+# Cargar cookies y URLs desde el archivo JSON
+def cargar_sitios_desde_archivo():
     try:
+        with open("sitios.json", "r") as archivo:
+            data = json.load(archivo)
+            sitios.update(data)
+    except FileNotFoundError:
+        print("El archivo 'sitios.json' no se encontró.")
+
+# Función para verificar una cookie
+def verificar_cookie(url, cookie):
+    try:
+        # Crear una sesión de requests
         session = requests.Session()
-        response = session.get(url)
-        response.raise_for_status()  # Lanza una excepción si hay un error en la respuesta
-        cookies = response.cookies
 
-        if cookie_name in cookies:
-            authenticated_urls = [
-                "https://www.example.com/protected_page1",
-                "https://www.example.com/protected_page2",
-                "https://www.example.com/protected_page3"
-            ]
-            compromised = False
+        # Cargar la cookie en la sesión
+        session.cookies.set(cookie["cookie_name"], cookie["cookie_value"])
 
-            for authenticated_url in authenticated_urls:
-                response = session.get(authenticated_url)
-                response.raise_for_status()  # Lanza una excepción si hay un error en la respuesta
+        # Verificar si la cookie contiene la clave "username" y "password"
+        if "username" in cookie and "password" in cookie:
+            username = cookie["username"]
+            password = cookie["password"]
 
-                if response.status_code != 200 or "Invalid session" in response.text:
-                    compromised = True
-                    break
+            # Realizar la autenticación utilizando la biblioteca de autenticación de terceros
+            auth = HttpNtlmAuth(username, password)
 
-            if compromised:
-                queue.put("La sesión de cookie ha sido comprometida.")
+            # Realizar una solicitud a la URL con autenticación NTLM
+            response = session.get(url, auth=auth)
+
+            # Verificar el estado de inicio de sesión
+            if response.status_code == 200:
+                print(f"La cookie {cookie['cookie_name']} en {url} está en uso.")
             else:
-                queue.put("La sesión de cookie está activa y válida.")
+                print(f"La cookie {cookie['cookie_name']} en {url} no está en uso. Realizando notificación.")
+                # Puedes agregar aquí tu lógica de notificación (por correo, mensaje de texto, etc.)
         else:
-            queue.put("La sesión de cookie no está activa o ha sido comprometida.")
+            print(f"La cookie {cookie['cookie_name']} en {url} no contiene información de usuario.")
 
     except requests.exceptions.RequestException as e:
-        logging.error("Error en la solicitud: %s", str(e))
-        queue.put("Error en la solicitud. Verifica la conexión.")
+        print(f"Error al verificar la cookie: {e}")
 
-    except requests.exceptions.HTTPError as e:
-        logging.error("Error HTTP en la respuesta: %s", str(e))
-        queue.put("Error en la respuesta HTTP.")
+# Cargar sitios y cookies desde el archivo JSON
+cargar_sitios_desde_archivo()
 
-def send_sms_notification(message):
-    try:
-        account_sid = 'TU_ACCOUNT_SID'
-        auth_token = 'TU_AUTH_TOKEN'
-        from_phone = '+1234567890'
-        to_phone = '+0987654321'
-
-        client = Client(account_sid, auth_token)
-
-        client.messages.create(
-            body=message,
-            from_=from_phone,
-            to=to_phone
-        )
-        logging.info("Mensaje de texto enviado.")
-
-    except Exception as e:
-        logging.error("Error al enviar el mensaje de texto: %s", str(e))
-
-def job(url, cookie_name, queue):
-    try:
-        check_session_cookie(url, cookie_name, queue)
-        message = queue.get()
-        if "comprometida" in message:
-            send_sms_notification(message)
-        logging.info(message)
-    except Exception as e:
-        logging.error("Error en el trabajo programado: %s", str(e))
-
-if __name__ == "__main__":
-    url = "https://www.example.com"
-    cookie_name = "session_id"
-
-    queue = Queue()
-
-    schedule.every(1).hours.do(job, url=url, cookie_name=cookie_name, queue=queue)
-
-    p = Process(target=schedule.run_continuously)
-    p.start()
-
-    sniff(prn=lambda packet: packet_callback_wrapper(packet, queue), store=0)
-
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        p.terminate()
-        p.join()
+for sitio, data in sitios.items():
+    if "url" in data and "cookies" in data:
+        url = data["url"]
+        cookies_list = data["cookies"]
+        print(f"Verificando cookies en {sitio} ({url}):")
+        for cookie in cookies_list:
+            if "cookie_name" in cookie and "cookie_value" in cookie:
+                verificar_cookie(url, cookie)
+    else:
+        print(f"No se encontró la información completa para {sitio} en el archivo 'sitios.json'.")
