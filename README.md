@@ -18,7 +18,7 @@ Antes de usar CapCookie, asegúrate de tener lo siguiente instalado:
 
 - Clona este repositorio en tu sistema.
 - Configura el archivo sitios.json 
-- Ejecuta el programa con el comando `python3 PcFire.py`.
+- Ejecuta el programa con el comando `python3 CapCookie.py`.
 
 
 
