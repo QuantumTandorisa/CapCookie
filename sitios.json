@@ -1,0 +1,28 @@
+{
+    "Sitio1": {
+        "url": "http://www.ejemplo1.com",
+        "cookies": [
+            {
+                "cookie_name": "Cookie1",
+                "cookie_value": "Valor1",
+                "username": "NombreDeUsuario1",
+                "password": "Contraseña1"
+            },
+            {
+                "cookie_name": "Cookie2",
+                "cookie_value": "Valor2",
+                "username": "NombreDeUsuario2",
+                "password": "Contraseña2"
+            }
+        ]
+    },
+    "Sitio2": {
+        "url": "http://www.ejemplo2.com",
+        "cookies": [
+            {
+                "cookie_name": "Cookie3",
+                "cookie_value": "Valor3"
+            }
+        ]
+    }
+}
